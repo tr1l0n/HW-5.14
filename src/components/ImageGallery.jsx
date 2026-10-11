@@ -5,7 +5,7 @@ export const ImageGallery = ({ gallery, onClick }) => {
     console.log(gallery);
     
   return (
-      <ul className="gallery" onClick={onClick}>
+      <ul className="imageGallery" onClick={onClick}>
           {gallery.map(item => (
               <ImageGalleryItem item={item} />
           ))}

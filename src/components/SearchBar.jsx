@@ -1,5 +1,6 @@
 import { Component } from "react";
 import "../styles.css";
+import { FaSearch } from "react-icons/fa";
 export class SearchBar extends Component {
   state = {
     query: "",
@@ -19,20 +20,29 @@ export class SearchBar extends Component {
     if (!query) return;
 
     this.props.onSubmit(query);
+
   };
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <header className="searchbar">
+        <form className="searchForm" onSubmit={this.handleSubmit}>
+          <button type="submit" className="searchForm-button">
+            <FaSearch/>
+          {/* <span className="seacrhForm-button-label">Search</span> */}
+        </button>
+
         <input
+          className="searchForm-input"
           type="text"
+          autocomplete="off"
+          autofocus
+          placeholder="Search images and photos"
           value={this.state.query}
           onChange={this.handleChange}
-          placeholder="Search images..."
         />
-
-        <button type="submit">Search</button>
       </form>
+    </header>
     );
   }
 }
