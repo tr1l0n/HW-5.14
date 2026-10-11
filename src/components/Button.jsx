@@ -1,6 +1,6 @@
 import React from 'react'
-
-export const Button = (onLoad) => {
+import "../styles.css";
+export const Button = ({ onLoad }) => {
   return (
     <button type='button' onClick={onLoad}>Load more</button>
   )

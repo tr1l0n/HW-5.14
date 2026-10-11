@@ -1,23 +1,38 @@
-import React from 'react'
+import { Component } from "react";
+import "../styles.css";
+export class SearchBar extends Component {
+  state = {
+    query: "",
+  };
 
-export const SearchBar = ({ onSubmit }) => {
-  return (
-    <header className="searchbar">
-      <form className="form" onSubmit={onSubmit}>
-        <button type="submit" class="button">
-          <span className="button-label">Search</span>
-        </button>
+  handleChange = (event) => {
+    this.setState({
+      query: event.target.value,
+    });
+  };
 
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    const query = this.state.query.trim();
+
+    if (!query) return;
+
+    this.props.onSubmit(query);
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
         <input
-          className="input"
           type="text"
-          autocomplete="off"
-          autofocus
-          placeholder="Search images and photos"
+          value={this.state.query}
+          onChange={this.handleChange}
+          placeholder="Search images..."
         />
+
+        <button type="submit">Search</button>
       </form>
-    </header>
-  );
+    );
+  }
 }
-
-
