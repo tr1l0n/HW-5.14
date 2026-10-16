@@ -10,28 +10,42 @@ import { Loader } from './components/Loader'
 export default class App extends Component {
   state = {
     query: '',
+    totalHits: null,
     gallery: [],
     page: 1,
-    error:null,
+    error: null,
     status: 'idle',
     isOpen: false,
     selectedImage: null,
   }
+  componentDidUpdate = async ( prevProps, prevState) => {
+    if (prevState.query !== this.state.query) {
+      try {
+        const resp = await this.handleFetch(this.state.query); 
+        this.setState({
+          gallery: resp.hits,
+          totalHits: resp.totalHits,
+          status: "resolved",
+        })
+      } catch (error) {
+        this.setState({ error: error.message, status: "rejected" });
+      }
+    }
+  }
+  
+  handleFetch = async (query) => {
+    return await fetchImages(query);
+  }
   handleSearch = async query => {
+    if (query === this.state.query) {
+      alert('введи новий запит');
+      return;
+    }
     this.setState({
       status: "pending",
       query,
-      page:1
+      page: 1
     })
-    try {
-      const data =await fetchImages(query, 1);
-      this.setState({
-        gallery: data.hits,
-        status: "resolved",
-      })
-    } catch (error) {
-      this.setState({error:error.message,status:"rejected"})
-    }
   }
   handleToggle = () => {
     this.setState(prevState => ({
@@ -50,13 +64,11 @@ export default class App extends Component {
       selectedImage,
     });
   };
-  handleLoadMore =async () => {
-    const { query, page, gallery } = this.state;
+  handleLoadMore = async () => {
+    const { query, page, gallery} = this.state;
     const nextPage = page + 1;
-    console.log(nextPage);
-    
     try {
-      const images = await fetchImages(query, nextPage);
+      const images = await fetchImages(query, page);
       this.setState({
         gallery: [...gallery, ...images.hits],
         page: nextPage
@@ -68,10 +80,11 @@ export default class App extends Component {
     }
   }
   render() {
-    const { status, isOpen, gallery,selectedImage,error } = this.state;
+    const { status, isOpen, gallery, selectedImage, error,page,totalHits} = this.state;
+    const isAllImageLoaded = page === Math.ceil(totalHits / 12);
     if (status === "pending") {
       return (
-        <Loader/>
+        <Loader />
       )
     }
     if (status === "resolved") {
@@ -79,7 +92,9 @@ export default class App extends Component {
         <div>
           <SearchBar onSubmit={this.handleSearch} />
           <ImageGallery gallery={gallery} onClick={this.handleOpen} />
-          <Button onLoad={this.handleLoadMore} />
+          {!isAllImageLoaded && (
+            <Button onLoad={this.handleLoadMore} />
+          )}
           {isOpen && (
             <Modal onClose={this.handleToggle}>
               <img
@@ -109,6 +124,5 @@ export default class App extends Component {
         </div>
       );
     }
-  }
-  
+  } 
 }

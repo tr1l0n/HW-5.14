@@ -7,9 +7,9 @@ export class SearchBar extends Component {
   };
 
   handleChange = (event) => {
-    this.setState({
-      query: event.target.value,
-    });
+      this.setState({
+        query: event.target.value,
+      });
   };
 
   handleSubmit = (event) => {
@@ -19,7 +19,7 @@ export class SearchBar extends Component {
 
     if (!query) return;
 
-    this.props.onSubmit(query);
+    this.props.onSubmit(query );
 
   };
 
