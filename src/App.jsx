@@ -84,8 +84,18 @@ export default class App extends Component {
     const isAllImageLoaded = page === Math.ceil(totalHits / 12);
     if (status === "pending") {
       return (
-        <Loader />
-      )
+        <div className='loader'>
+          <Loader />
+        </div>
+      );
+    }
+    if (status === "resolved" && gallery.length === 0) {
+      return (
+        <div>
+          <SearchBar onSubmit={this.handleSearch} />
+          <h1>Картинок за таким запитом немає,введіть інший запит,будь ласка</h1>
+        </div>
+      );
     }
     if (status === "resolved") {
       return (
